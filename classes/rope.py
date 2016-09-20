@@ -1,3 +1,9 @@
+"""TODO:
+		Make a throwable rope, because right now it instantly appear out of thin air
+            After making that, limit the number of ropes thrown to one at a time
+        Name better those parameters. Or not. I dont know.
+"""
+
 from FGAme import *
 from FGAme.physics.collision import get_collision, Collision
 from math import fabs
