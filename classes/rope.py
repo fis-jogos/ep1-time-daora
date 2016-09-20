@@ -17,13 +17,19 @@ from smallshapes import area, clip, center_of_mass, ROG_sqr
 from smallvectors import dot, Rotation2d
 
 DEFAULT_SHAPE_X = 5
+DEFAULT_ROPE_LENGTH = 200
+DEFAULT_K = 5000
+
 class Rope:
 	"""
 	Rope objects does not have collisions
 	"""
-	def __init__(self, starting_position, ending_position):
+	def __init__(self, starting_position, \
+				 ending_position, length=DEFAULT_ROPE_LENGTH, k=DEFAULT_K):
 		self.starting_position = starting_position
 		self.ending_position = ending_position
+		self.length = length
+		self.k = k
 
 		self.create()
 
