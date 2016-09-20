@@ -3,7 +3,7 @@ from rope import Rope
 from math import fabs
 
 MOVING = False
-CONSTANT_K = 10
+CONSTANT_K = 10000
 MAX_DIST = 200
 
 ROPE = None
@@ -20,7 +20,7 @@ def start():
 
     PLATFORM = world.add.circle(30, pos=pos.middle+(0, 200))
 
-    PLAYER.gravity = 30
+    PLAYER.gravity = 1000
     PLAYER.damping = 1
     
     PLATFORM.vel = (100, 0)
@@ -36,24 +36,25 @@ def update():
         direction = dist - dist.normalize()*MAX_DIST
         direction *= CONSTANT_K
 
-        print(direction)
-        PLAYER.apply_force(direction, 1)
+        PLAYER.force = lambda t: direction
     else:
         #Do nothing
         pass
 
-@listen('long-press', 'left', dx=-50)
-@listen('long-press', 'right', dx=50)
+@listen('long-press', 'left', dx=-5)
+@listen('long-press', 'right', dx=5)
 def windleft(dx):
-    PLAYER.apply_force((dx, 0), 1)
+    PLAYER.move(dx, 0)
 @listen('key-down', 'space')
 def hook():
     global ROPE
+    global PLAYER
 
     if ROPE == None:
-        if fabs(PLATFORM.pos.x-PLAYER.pos.x) < 30:
-            ROPE = Rope(starting_position=PLATFORM.pos, \
-                        ending_position=PLAYER.pos)
+        # if fabs(PLATFORM.pos.x-PLAYER.pos.x) < 30:
+        ROPE = Rope(starting_position=PLATFORM.pos, \
+                    ending_position=PLAYER.pos)
     else:
+        PLAYER.force = lambda t: PLAYER.gravity
         ROPE.remove()
         ROPE = None
