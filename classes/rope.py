@@ -27,8 +27,7 @@ class Rope:
 			self.dist = 1
 		
 		self.obj = world.add.rectangle(shape=(DEFAULT_SHAPE_X, -self.dist.norm()), \
-								pos=self.starting_position - self.dist/2)
-
+									   pos=self.starting_position - self.dist/2)	
 		self.obj.is_rope = True
 		self.rotate()
 

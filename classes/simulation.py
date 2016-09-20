@@ -18,12 +18,12 @@ def start():
     world.add.margin(10)
     PLAYER = world.add.circle(10, pos=pos.middle)
 
-    PLATFORM = world.add.circle(30, pos=pos.middle+(0, 200))
+    PLATFORM = world.add.circle(30, pos=pos.middle+(0, 200), mass=1000000)
 
-    PLAYER.gravity = 1000
+    PLAYER.gravity = 500
     PLAYER.damping = 1
     
-    PLATFORM.vel = (100, 0)
+    PLATFORM.vel = (100, -50)
     run()
 
 @listen('frame-enter')
@@ -41,17 +41,19 @@ def update():
         #Do nothing
         pass
 
-@listen('long-press', 'left', dx=-5)
-@listen('long-press', 'right', dx=5)
+dx = 10
+
+@listen('long-press', 'left', dx=-dx)
+@listen('long-press', 'right', dx=dx)
 def windleft(dx):
-    PLAYER.move(dx, 0)
+    PLAYER.vel += (dx, 0)
 @listen('key-down', 'space')
 def hook():
     global ROPE
     global PLAYER
 
     if ROPE == None:
-        # if fabs(PLATFORM.pos.x-PLAYER.pos.x) < 30:
+        # if fabs(PLATFORM.pos.x-PLAYER.pos.x) < 30: #Hook only if platform is directly above
         ROPE = Rope(starting_position=PLATFORM.pos, \
                     ending_position=PLAYER.pos)
     else:
