@@ -15,26 +15,34 @@ class Rope:
 	"""
 	Rope objects does not have collisions
 	"""
-	def __init__(self, starting_position, ending_position, balance_center):
+	def __init__(self, starting_position, ending_position):
 		self.starting_position = starting_position
 		self.ending_position = ending_position
-		self.balance_center = balance_center
 
-		self.dist = starting_position - ending_position
+		self.create()
+
+	def create(self):
+		self.dist = self.starting_position - self.ending_position
 		if fabs(self.dist.norm()) <= 1:
 			self.dist = 1
 		
 		self.obj = world.add.rectangle(shape=(DEFAULT_SHAPE_X, -self.dist.norm()), \
-								pos=starting_position - self.dist/2)
+								pos=self.starting_position - self.dist/2)
 
 		self.obj.is_rope = True
 		self.rotate()
 
 	def rotate(self):
-		if self.ending_position.x > self.balance_center.x:
+		if self.ending_position.x > self.starting_position.x:
 			self.obj.rotate(angle(Vec(0, 1), self.dist))
 		else:
 			self.obj.rotate(angle(Vec(0, -1), self.dist))
+
+	def update(self, starting_position, ending_position):
+		self.remove()
+		self.starting_position = starting_position
+		self.ending_position = ending_position
+		self.create()
 
 	def remove(self):
 		world.remove(self.obj)
