@@ -7,6 +7,7 @@
 
 from FGAme import *
 from rope import Rope
+from platforms import Platforms
 from math import fabs
 
 MIN_ROPE_LENGTH = 50
@@ -15,9 +16,7 @@ MAX_ROPE_LENGTH = 300
 # Change these pls
 ROPE = None
 PLAYER = None
-PLATFORM = None
-
-
+PLATFORM = Platforms()
 
 def start():
     global PLAYER
@@ -28,22 +27,23 @@ def start():
 
     PLAYER = world.add.circle(10, pos=pos.middle)
 
-    PLATFORM = world.add.circle(30, pos=pos.middle+(0, 200), mass=100000000)
+    PLATFORM.add(pos=pos.middle+(0, 200))
+    PLATFORM.add(pos=pos.middle+(200, 500))
 
     PLAYER.gravity = 500
     PLAYER.damping = 1
-    
+
     run()
 
 @listen('frame-enter')
 def update():
     global ROPE
-    move_screen(0.5)
+    # move_screen(0.5)
 
     if ROPE != None:
-        ROPE.update(starting_position=PLATFORM.pos, ending_position=PLAYER.pos)
+        ROPE.update()
 
-        dist = PLATFORM.pos - PLAYER.pos
+        dist = ROPE.platform.pos - PLAYER.pos
         direction = dist - dist.normalize()*ROPE.length
         direction *= ROPE.k
 
@@ -64,9 +64,10 @@ def hook():
     global PLAYER
 
     if ROPE == None:
-        # if fabs(PLATFORM.pos.x-PLAYER.pos.x) < 30: #Hook only if platform is directly above
-        ROPE = Rope(starting_position=PLATFORM.pos, \
-                    ending_position=PLAYER.pos)
+        for platform in PLATFORM.items:
+            if fabs(platform.pos.x-PLAYER.pos.x) < 30 and platform.pos.y > PLAYER.pos.y: #Hook only if platform is directly above
+                ROPE = Rope(platform=platform, \
+                            player=PLAYER)
     else:
         PLAYER.force = lambda t: PLAYER.gravity
         ROPE.remove()
@@ -76,7 +77,7 @@ def hook():
 @listen('long-press', 'down', k=-5)
 def climb_rope(k):
     if ROPE != None:
-        direction = PLATFORM.pos - PLAYER.pos
+        direction = ROPE.platform.pos - PLAYER.pos
         direction = direction.normalize()
 
         direction *= k
@@ -84,8 +85,9 @@ def climb_rope(k):
         if norm > MIN_ROPE_LENGTH and norm < MAX_ROPE_LENGTH:
             ROPE.length = norm
         else:
-            direction = (0, 0)
-
+            direction = Vec(0, 0)
+        if k > 0:
+            move_screen(2*k)
         PLAYER.move(direction)
     else:
         #Do nothing

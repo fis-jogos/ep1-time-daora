@@ -20,14 +20,17 @@ DEFAULT_SHAPE_X = 5
 DEFAULT_ROPE_LENGTH = 200
 DEFAULT_K = 5000
 
-class Rope:
+class Rope(World):
 	"""
 	Rope objects does not have collisions
 	"""
-	def __init__(self, starting_position, \
-				 ending_position, length=DEFAULT_ROPE_LENGTH, k=DEFAULT_K):
-		self.starting_position = starting_position
-		self.ending_position = ending_position
+	def __init__(self, player, \
+				 platform, length=DEFAULT_ROPE_LENGTH, k=DEFAULT_K):
+		self.platform = platform
+		self.player = player
+
+		self.starting_position = self.player.pos
+		self.ending_position = self.platform.pos
 		self.length = length
 		self.k = k
 
@@ -49,15 +52,18 @@ class Rope:
 		else:
 			self.obj.rotate(angle(Vec(0, -1), self.dist))
 
-	def update(self, starting_position, ending_position):
+	def update(self):
 		self.remove()
-		self.starting_position = starting_position
-		self.ending_position = ending_position
+		self.starting_position = self.player.pos
+		self.ending_position = self.platform.pos
 		self.create()
 
 	def remove(self):
 		world.remove(self.obj)
 
+	def frame_enter_event(self):
+		print("oi")
+		
 def angle(v1, v2):
 	return math.acos(v1.dot(v2)/(v1.norm()*v2.norm()))
 
