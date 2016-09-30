@@ -14,3 +14,6 @@ class Platforms:
 	def add(self, pos, radius=DEFAULT_RADIUS):
 		platform = world.add.circle(30, pos=pos, mass=100000000)
 		self.items.append(platform)
+
+	def remove(self, remove_item):
+		self.items.remove(remove_item)

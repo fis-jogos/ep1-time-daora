@@ -37,8 +37,7 @@ def start():
 
 @listen('frame-enter')
 def update():
-    global ROPE
-    # move_screen(0.5)
+    move_screen(0.5)
 
     if ROPE != None:
         ROPE.update()
@@ -58,6 +57,7 @@ dx = 10
 @listen('long-press', 'right', dx=dx)
 def wind(dx):
     PLAYER.vel += (dx, 0)
+
 @listen('key-down', 'space')
 def hook():
     global ROPE
@@ -69,25 +69,24 @@ def hook():
                 ROPE = Rope(platform=platform, \
                             player=PLAYER)
     else:
-        PLAYER.force = lambda t: PLAYER.gravity
         ROPE.remove()
         ROPE = None
 
-@listen('long-press', 'up', k=5)
-@listen('long-press', 'down', k=-5)
-def climb_rope(k):
+@listen('long-press', 'up', climbing_distance=5)
+@listen('long-press', 'down', climbing_distance=-5)
+def climb_rope(climbing_distance):
     if ROPE != None:
         direction = ROPE.platform.pos - PLAYER.pos
         direction = direction.normalize()
 
-        direction *= k
-        norm = ROPE.length - direction.norm()*(k/fabs(k))
+        direction *= climbing_distance
+        norm = ROPE.length - direction.norm()*(climbing_distance/fabs(climbing_distance))
         if norm > MIN_ROPE_LENGTH and norm < MAX_ROPE_LENGTH:
             ROPE.length = norm
         else:
             direction = Vec(0, 0)
-        if k > 0:
-            move_screen(2*k)
+        if climbing_distance > 0:
+            move_screen(climbing_distance)
         PLAYER.move(direction)
     else:
         #Do nothing

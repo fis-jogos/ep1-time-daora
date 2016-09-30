@@ -60,6 +60,7 @@ class Rope(World):
 
 	def remove(self):
 		world.remove(self.obj)
+		self.player.force = lambda t: self.player.gravity
 
 	def frame_enter_event(self):
 		print("oi")
