@@ -9,6 +9,7 @@ from FGAme import *
 from rope import Rope
 from platforms import Platforms
 from math import fabs
+from light import Light
 
 MIN_ROPE_LENGTH = 50
 MAX_ROPE_LENGTH = 300
@@ -16,28 +17,34 @@ MAX_ROPE_LENGTH = 300
 # Change these pls
 ROPE = None
 PLAYER = None
+LIGHT = None
 PLATFORM = Platforms()
 
 def start():
     global PLAYER
     global PLATFORM
+    global LIGHT
+
 
     margin(10)
     # world.add.margin(10)
 
-    PLAYER = world.add.circle(10, pos=pos.middle)
+    # PLAYER = world.add.circle(10, pos=pos.middle)
 
-    PLATFORM.add(pos=pos.middle+(0, 200))
-    PLATFORM.add(pos=pos.middle+(200, 500))
+    LIGHT = Light(pos=pos.middle)
+    s = world.add.rectangle(shape=(50, 50), pos=pos.middle-(100, 0))
+    # PLATFORM.add(pos=pos.middle+(0, 200))
+    # PLATFORM.add(pos=pos.middle+(200, 500))
 
-    PLAYER.gravity = 500
-    PLAYER.damping = 1
+    # PLAYER.gravity = 500
+    # PLAYER.damping = 1
 
+    LIGHT.draw_lines()
     run()
 
 @listen('frame-enter')
 def update():
-    move_screen(0.5)
+    # move_screen(0.5)
 
     if ROPE != None:
         ROPE.update()
