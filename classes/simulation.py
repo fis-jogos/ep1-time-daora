@@ -33,6 +33,7 @@ def start():
 
     LIGHT = Light(pos=pos.middle)
     s = world.add.rectangle(shape=(50, 50), pos=pos.middle-(100, 0))
+    s = world.add.rectangle(shape=(50, 50), pos=pos.middle+(50, 50))
     # PLATFORM.add(pos=pos.middle+(0, 200))
     # PLATFORM.add(pos=pos.middle+(200, 500))
 
@@ -45,7 +46,7 @@ def start():
 @listen('frame-enter')
 def update():
     # move_screen(0.5)
-
+    LIGHT.draw_lines()
     if ROPE != None:
         ROPE.update()
 
