@@ -9,7 +9,6 @@ from FGAme import *
 from rope import Rope
 from platforms import Platforms
 from math import fabs
-from light import Light
 
 MIN_ROPE_LENGTH = 50
 MAX_ROPE_LENGTH = 300
@@ -17,37 +16,29 @@ MAX_ROPE_LENGTH = 300
 # Change these pls
 ROPE = None
 PLAYER = None
-LIGHT = None
 PLATFORM = Platforms()
 
 def start():
     global PLAYER
     global PLATFORM
-    global LIGHT
 
     margin(10)
     # world.add.margin(10)
 
-    # PLAYER = world.add.circle(10, pos=pos.middle)
+    PLAYER = world.add.circle(10, pos=pos.middle)
 
-    LIGHT = Light(pos=pos.middle)
-    s = world.add.rectangle(shape=(50, 50), pos=pos.middle-(100, 0), mass='inf')
-    s = world.add.rectangle(shape=(50, 50), pos=pos.middle+(50, 50), mass='inf')
-    # PLATFORM.add(pos=pos.middle+(0, 200))
-    # PLATFORM.add(pos=pos.middle+(200, 500))
+    PLATFORM.add(pos=pos.middle+(0, 200))
+    PLATFORM.add(pos=pos.middle+(200, 500))
 
-    # PLAYER.gravity = 500
-    # PLAYER.damping = 1
+    PLAYER.gravity = 500
+    PLAYER.damping = 1
 
-    # LIGHT.draw_lines()
-    # LIGHT.draw_lines()
-    
     run()
 
 @listen('frame-enter')
 def update():
-    # move_screen(0.5)
-    LIGHT.draw_lines()
+    move_screen(0.5)
+
     if ROPE != None:
         ROPE.update()
 
@@ -72,7 +63,6 @@ def hook():
     global ROPE
     global PLAYER
 
-    LIGHT.switch()
     if ROPE == None:
         for platform in PLATFORM.items:
             if fabs(platform.pos.x-PLAYER.pos.x) < 30 and platform.pos.y > PLAYER.pos.y: #Hook only if platform is directly above
@@ -85,7 +75,6 @@ def hook():
 @listen('long-press', 'up', climbing_distance=5)
 @listen('long-press', 'down', climbing_distance=-5)
 def climb_rope(climbing_distance):
-
     if ROPE != None:
         direction = ROPE.platform.pos - PLAYER.pos
         direction = direction.normalize()
