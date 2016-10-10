@@ -1,22 +1,32 @@
 from FGAme import *
 import math
 
+f = draw.Poly(((0,0), (0, 600), (800, 600), (800, 0)))
+
 class Light:
 	def __init__(self, pos, size=5):
-		self.obj = world.add.circle(size, pos=pos, color=(255, 255, 0), vel=(10, 0))
+		self.obj = world.add.circle(size, pos=pos, color=(255, 255, 0), vel=(100, 0))
 		self.seg = []
+		self.light_area = []
+		self.points = []
+		self.color = False
 		world.add(self.obj)
 
 	def draw_lines(self):
+		s = world._render_tree._data[0][1]
 		while len(self.seg) > 0:
-			self.seg[-1].visible = False
+			s.remove(self.seg[-1])
 			self.seg.pop()
+
+		if len(self.light_area) > 0 and self.color:
+			s.remove(self.light_area)
+			self.light_area = []
+
 		lines = []
 		vertices = []
 		points = []
-		rays = []
-
-		for obj in world:
+		rays = []		
+		for obj in s:
 			if hasattr(obj, 'vertices'):
 				for index, vertice in enumerate(obj.vertices):
 					index = (index+1)%len(obj.vertices)
@@ -29,20 +39,15 @@ class Light:
 
 		lines.append((Vec(0, 600), Vec(800, 600)))
 		lines.append((Vec(0, 0), Vec(800, 0)))
-
-
 		for ray in rays:
 			dist = ray
 
 			for line in lines:
 				x, y = line_intersection(line, (dist+self.obj.pos, self.obj.pos))
-				# print(x, y)
 				if x != None and y != None:
 					curr_distance = Vec(x, y) - self.obj.pos
-					# print(curr_distance.norm(), dist.norm())
 					if curr_distance.norm() < dist.norm():
 						dist = curr_distance
-
 			point = self.obj.pos+dist
 
 			for vertice in vertices:
@@ -50,21 +55,27 @@ class Light:
 					rays.append(ray.rotate((math.pi/180)*0.0001)*100)
 					rays.append(ray.rotate((math.pi/180)*-0.0001)*100)
 
-			# if point.x < 0 or point.x > 800 or point.y < 0 or point.y > 600:
-				# continue
-
-			# print(self.obj.pos+dist, self.obj.pos)
 			seg = draw.Segment(self.obj.pos+dist, self.obj.pos)
 			self.seg.append(seg)
 			world.add(seg)
 			points.append(point)
 
-		# points.sort(key=lambda c:math.atan2(c.x+self.obj.pos.x, c.y+self.obj.pos.y))
+		points.sort(key=lambda p: math.atan2(p.y-self.obj.pos.y,p.x-self.obj.pos.x))
 
-		# p = draw.Poly(points, color=(200, 200, 0))
-		# world.add(p)
+		if self.color:
+			self.light_area = draw.Poly(points, color=(200, 200, 0))
+			world.add(self.light_area)
 
-		# world.reverse()
+
+	def switch(self):
+		self.color = not self.color
+		if self.color == True:
+			world.add(f)
+		else:
+			s = world._render_tree._data[0][1]
+			s.remove(f)
+			s.remove(self.light_area)
+			self.light_area = []
 
 	def update(self):
 		self.draw_lines()

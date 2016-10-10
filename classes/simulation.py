@@ -25,22 +25,23 @@ def start():
     global PLATFORM
     global LIGHT
 
-
     margin(10)
     # world.add.margin(10)
 
     # PLAYER = world.add.circle(10, pos=pos.middle)
 
     LIGHT = Light(pos=pos.middle)
-    s = world.add.rectangle(shape=(50, 50), pos=pos.middle-(100, 0))
-    s = world.add.rectangle(shape=(50, 50), pos=pos.middle+(50, 50))
+    s = world.add.rectangle(shape=(50, 50), pos=pos.middle-(100, 0), mass='inf')
+    s = world.add.rectangle(shape=(50, 50), pos=pos.middle+(50, 50), mass='inf')
     # PLATFORM.add(pos=pos.middle+(0, 200))
     # PLATFORM.add(pos=pos.middle+(200, 500))
 
     # PLAYER.gravity = 500
     # PLAYER.damping = 1
 
-    LIGHT.draw_lines()
+    # LIGHT.draw_lines()
+    # LIGHT.draw_lines()
+    
     run()
 
 @listen('frame-enter')
@@ -71,6 +72,7 @@ def hook():
     global ROPE
     global PLAYER
 
+    LIGHT.switch()
     if ROPE == None:
         for platform in PLATFORM.items:
             if fabs(platform.pos.x-PLAYER.pos.x) < 30 and platform.pos.y > PLAYER.pos.y: #Hook only if platform is directly above
@@ -83,6 +85,7 @@ def hook():
 @listen('long-press', 'up', climbing_distance=5)
 @listen('long-press', 'down', climbing_distance=-5)
 def climb_rope(climbing_distance):
+
     if ROPE != None:
         direction = ROPE.platform.pos - PLAYER.pos
         direction = direction.normalize()
