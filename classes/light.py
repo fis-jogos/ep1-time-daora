@@ -13,25 +13,25 @@ class Light:
 		world.add(self.obj)
 
 	def draw_lines(self):
-		s = world._render_tree._data[0][1]
 		while len(self.seg) > 0:
-			s.remove(self.seg[-1])
+			remove(self.seg[-1])
 			self.seg.pop()
 
 		if len(self.light_area) > 0 and self.color:
-			s.remove(self.light_area)
+			remove(self.light_area)
 			self.light_area = []
 
 		lines = []
 		vertices = []
 		points = []
 		rays = []		
-		for obj in s:
+		for obj in world:
 			if hasattr(obj, 'vertices'):
 				for index, vertice in enumerate(obj.vertices):
 					index = (index+1)%len(obj.vertices)
 					lines.append((vertice, obj.vertices[index]))
 					vertices.append(vertice)
+		print(obj)
 
 		for vertice in vertices:
 			dist = vertice - self.obj.pos
@@ -72,13 +72,19 @@ class Light:
 		if self.color == True:
 			world.add(f)
 		else:
-			s = world._render_tree._data[0][1]
-			s.remove(f)
-			s.remove(self.light_area)
+			remove(f)
+			remove(self.light_area)
 			self.light_area = []
 
 	def update(self):
 		self.draw_lines()
+
+def remove(obj):
+	rt = world._render_tree._data[0][1]
+	world_objects = world._objects
+
+	rt.remove(obj)
+	world_objects.remove(obj)
 
 def line_intersection(line1, line2):
 	xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
