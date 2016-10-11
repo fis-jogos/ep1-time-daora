@@ -7,7 +7,7 @@ EPS = 1e-6
 
 class Light(object):
 	def __init__(self, pos, size=5):
-		self.obj = world.add.circle(size, pos=pos, color=(255, 255, 0))
+		self.obj = world.add.circle(size, pos=pos, color=(255, 255, 0), vel=(100,0))
 		self.seg = []
 		self.light_area = []
 		self.points = []
@@ -40,9 +40,10 @@ class Light(object):
 
 		lines.append((Vec(0, 600), Vec(800, 600)))
 		lines.append((Vec(0, 0), Vec(800, 0)))
-		for ray in rays:
+		lines.append((Vec(0, 0), Vec(0, 600)))
+		lines.append((Vec(800, 0), Vec(800, 600)))
+		for index, ray in enumerate(rays):
 			dist = ray
-
 			for line in lines:
 				x, y = line_intersection(line, (dist+self.obj.pos, self.obj.pos))
 				if x != None and y != None:
@@ -53,12 +54,12 @@ class Light(object):
 
 			for vertice in vertices:
 				if math.fabs(point.x-vertice.x) < EPS and math.fabs(point.y-vertice.y) < EPS:
-					rays.append(ray.rotate((math.pi/180)*0.0001)*100)
-					rays.append(ray.rotate((math.pi/180)*-0.0001)*100)
+					rays.insert(index+1, ray.rotate((math.pi/180)*0.0001)*100)
+					rays.insert(index+2, ray.rotate((math.pi/180)*-0.0001)*100)
 
 			seg = draw.Segment(self.obj.pos+dist, self.obj.pos)
-			# self.seg.append(seg)
-			# world.add(seg)	
+			self.seg.append(seg)
+			world.add(seg)	
 			points.append(point)
 
 		points.sort(key=lambda p: math.atan2(p.y-self.obj.pos.y,p.x-self.obj.pos.x))
@@ -87,8 +88,8 @@ def remove(obj):
 	world_objects.remove(obj)
 
 def line_intersection(line1, line2):
-	xdiff = (line1[0].x - line1[1].x, line2[0].x - line2[1].x)
-	ydiff = (line1[0].y - line1[1].y, line2[0].y - line2[1].y)
+	xdiff = Vec(line1[0].x - line1[1].x, line2[0].x - line2[1].x)
+	ydiff = Vec(line1[0].y - line1[1].y, line2[0].y - line2[1].y)
 
 	def det(a, b):
 		return a[0] * b[1] - a[1] * b[0]
@@ -96,7 +97,6 @@ def line_intersection(line1, line2):
 	div = det(xdiff, ydiff)
 	if div == 0:
 		return None, None
-
 	q, c = line1
 	s = c - q
 	p, c = line2

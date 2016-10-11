@@ -4,7 +4,7 @@
         Make a module for constants?
         Remove all those globals. pls
 '''
-
+import sys; sys.path.append('./classes/')
 from FGAme import *
 from rope import Rope
 from platforms import Platforms
@@ -17,17 +17,10 @@ MAX_ROPE_LENGTH = 300
 # Change these pls
 ROPE = None
 PLAYER = None
-LIGHT = None
+LIGHT = Light(pos=pos.middle)
 PLATFORM = Platforms()
 
-def start():
-    global PLAYER
-    global PLATFORM
-    global LIGHT
-
-    world.add.margin(10)
-
-    LIGHT = Light(pos=pos.middle)
+def start_simul():
     s = world.add.rectangle(shape=(50, 50), pos=pos.middle-(100, 0), mass='inf')
     s = world.add.rectangle(shape=(50, 50), pos=pos.middle+(50, 50), mass='inf')
     
@@ -50,3 +43,4 @@ def wind(dx=0, dy=0):
 def hook():
     LIGHT.switch()
 
+start_simul()
