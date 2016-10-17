@@ -7,7 +7,7 @@ EPS = 1e-6
 
 class Light(object):
 	def __init__(self, pos, size=5):
-		self.obj = world.add.circle(size, pos=pos, color=(255, 255, 0), vel=(100,0))
+		self.obj = world.add.circle(size, pos=pos, color=(255, 255, 0), vel=(300,0))
 		self.seg = []
 		self.light_area = []
 		self.points = []

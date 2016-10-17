@@ -7,6 +7,7 @@
 from FGAme import *
 from FGAme.physics.collision import get_collision, Collision
 from math import fabs
+from math import log
 
 from FGAme.mathtools import Vec2, sin, pi, shapes, shadow_y, \
     shadow_x
@@ -44,8 +45,8 @@ class Rope(World):
 		if fabs(self.dist.norm()) <= 1:
 			self.dist = 1
 		
-		self.obj = world.add.rectangle(shape=(DEFAULT_SHAPE_X, -self.dist.norm()), \
-									   pos=starting_position - self.dist/2)	
+		self.obj = world.add.rectangle(shape=(1000/((self.dist.norm())), -self.dist.norm()), \
+									   pos=starting_position - self.dist/2, color=(255, 0, 0))	
 		self.obj.is_rope = True
 		self.rotate()
 
@@ -62,6 +63,12 @@ class Rope(World):
 		if self.platform != None:
 			self.remove()
 			self.create()
+
+			dist = self.platform.pos - self.player.pos
+			direction = dist - dist.normalize()*self.length
+			direction *= self.k
+
+			self.player.force = lambda t: direction
 
 	def remove(self):
 		world.remove(self.obj)
@@ -176,7 +183,7 @@ def circle_poly(A, B, collision_class=Collision):
 	if delta > 0:
 		return collision_class(A, B, pos=pos, normal=normal, delta=delta)
 	else:
-		return No
+		return None
 
 
 @get_collision.overload([Poly, Circle])

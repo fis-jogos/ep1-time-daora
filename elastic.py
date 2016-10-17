@@ -22,8 +22,6 @@ ROPE = Rope(PLAYER.obj)
 
 def start_simul():
     margin(10)
-    # world.add.margin(10)
-
     PLATFORM.add(pos=pos.middle+(0, 200))
     PLATFORM.add(pos=pos.middle+(200, 500))
 
@@ -32,18 +30,7 @@ def start_simul():
 @listen('frame-enter')
 def update():
     move_screen(0.5)
-
-    if ROPE.platform != None:
-        ROPE.update()
-
-        dist = ROPE.platform.pos - PLAYER.obj.pos
-        direction = dist - dist.normalize()*ROPE.length
-        direction *= ROPE.k
-
-        PLAYER.obj.force = lambda t: direction
-    else:
-        #Do nothing
-        pass
+    ROPE.update()
 
 dx = 10
 
@@ -52,15 +39,20 @@ dx = 10
 def wind(dx):
     PLAYER.obj.vel += (dx, 0)
 
-@listen('key-down', 'space')
-def hook():
+@listen('key-down', 'space', color=(255, 0, 0), max_length=400)
+def hook(color, max_length):
     if ROPE.platform == None:
         for platform in PLATFORM.items:
             if (fabs(platform.pos.x-PLAYER.obj.pos.x) < 30 and \
-                platform.pos.y > PLAYER.obj.pos.y): #Hook only if platform is directly above
+                platform.pos.y > PLAYER.obj.pos.y and \
+                fabs(PLAYER.obj.pos.y - platform.pos.y) < max_length): #Hook only if platform is directly above
+                platform.color = color
+                PLAYER.obj.color = color
                 ROPE.connect(platform)
     else:
         ROPE.remove()
+        ROPE.platform.color = (0, 0, 0)
+        PLAYER.obj.color = (0, 0, 0)
         ROPE.platform = None
 
 @listen('long-press', 'up', climbing_distance=5)
