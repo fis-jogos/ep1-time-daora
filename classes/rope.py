@@ -7,6 +7,7 @@
 from FGAme import *
 from FGAme.physics.collision import get_collision, Collision
 from math import fabs
+from math import log
 
 from FGAme.mathtools import Vec2, sin, pi, shapes, shadow_y, \
     shadow_x
@@ -25,45 +26,53 @@ class Rope(World):
 	Rope objects does not have collisions
 	"""
 	def __init__(self, player, \
-				 platform, length=DEFAULT_ROPE_LENGTH, k=DEFAULT_K):
-		self.platform = platform
+				 length=DEFAULT_ROPE_LENGTH, k=DEFAULT_K):
+		self.platform = None
+		self.obj = None
 		self.player = player
-
-		self.starting_position = self.player.pos
-		self.ending_position = self.platform.pos
 		self.length = length
 		self.k = k
 
+	def connect(self, platform):
+		self.platform = platform
 		self.create()
 
 	def create(self):
-		self.dist = self.starting_position - self.ending_position
+		starting_position = self.player.pos
+		ending_position = self.platform.pos
+
+		self.dist = starting_position - ending_position
 		if fabs(self.dist.norm()) <= 1:
 			self.dist = 1
 		
-		self.obj = world.add.rectangle(shape=(DEFAULT_SHAPE_X, -self.dist.norm()), \
-									   pos=self.starting_position - self.dist/2)	
+		self.obj = world.add.rectangle(shape=(1000/((self.dist.norm())), -self.dist.norm()), \
+									   pos=starting_position - self.dist/2, color=(255, 0, 0))	
 		self.obj.is_rope = True
 		self.rotate()
 
 	def rotate(self):
-		if self.ending_position.x > self.starting_position.x:
+		starting_position = self.player.pos
+		ending_position = self.platform.pos
+
+		if ending_position.x > starting_position.x:
 			self.obj.rotate(angle(Vec(0, 1), self.dist))
 		else:
 			self.obj.rotate(angle(Vec(0, -1), self.dist))
 
 	def update(self):
-		self.remove()
-		self.starting_position = self.player.pos
-		self.ending_position = self.platform.pos
-		self.create()
+		if self.platform != None:
+			self.remove()
+			self.create()
+
+			dist = self.platform.pos - self.player.pos
+			direction = dist - dist.normalize()*self.length
+			direction *= self.k
+
+			self.player.force = lambda t: direction
 
 	def remove(self):
 		world.remove(self.obj)
 		self.player.force = lambda t: self.player.gravity
-
-	def frame_enter_event(self):
-		print("oi")
 		
 def angle(v1, v2):
 	return math.acos(v1.dot(v2)/(v1.norm()*v2.norm()))
@@ -174,7 +183,7 @@ def circle_poly(A, B, collision_class=Collision):
 	if delta > 0:
 		return collision_class(A, B, pos=pos, normal=normal, delta=delta)
 	else:
-		return No
+		return None
 
 
 @get_collision.overload([Poly, Circle])

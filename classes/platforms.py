@@ -17,3 +17,4 @@ class Platforms:
 
 	def remove(self, remove_item):
 		self.items.remove(remove_item)
+		
