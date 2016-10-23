@@ -10,9 +10,13 @@ from rope import Rope
 from platforms import Platforms
 from math import fabs
 from player import Player
+from random import randint
 
 MIN_ROPE_LENGTH = 50
 MAX_ROPE_LENGTH = 300
+MIN_POS_SCREEN_X = 100
+MAX_POS_SCREEN_X = 700
+OFFSCREEN_POS_Y = 600
 
 # Change these pls
 PLAYER = Player()
@@ -25,14 +29,33 @@ def start_simul():
     PLATFORM.add(pos=pos.middle+(0, 200))
     PLATFORM.add(pos=pos.middle+(200, 500))
 
+
     run()
+
+randomness_pos_x = 400
 
 @listen('frame-enter')
 def update():
+    global randomness_pos_x
     move_screen(0.5)
+    for platform in PLATFORM.items:
+        if(platform.y < 30):
+            PLATFORM.remove(platform)
+            if(randomness_pos_x >= MIN_POS_SCREEN_X and randomness_pos_x <= MAX_POS_SCREEN_X):
+                randomness_pos_x = randomness_pos_x + randint(-200,150)
+                PLATFORM.add(pos=(randomness_pos_x,OFFSCREEN_POS_Y))
+            elif (randomness_pos_x >= MAX_POS_SCREEN_X):
+                randomness_pos_x = randomness_pos_x - randint(200,300)
+                PLATFORM.add(pos=(randomness_pos_x,OFFSCREEN_POS_Y))
+            elif (randomness_pos_x <= MIN_POS_SCREEN_X):
+                randomness_pos_x = randomness_pos_x + randint(100,400)
+                PLATFORM.add(pos=(randomness_pos_x,OFFSCREEN_POS_Y))
+         
     ROPE.update()
 
 dx = 10
+
+
 
 @listen('long-press', 'left', dx=-dx)
 @listen('long-press', 'right', dx=dx)
