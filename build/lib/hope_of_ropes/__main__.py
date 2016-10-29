@@ -1,7 +1,7 @@
 import argparse
 import hope_of_ropes
 from hope_of_ropes import __version__
-
+from .elastic import start_simul
 
 def get_parser():
     """
@@ -21,12 +21,11 @@ def main(args=None):
             A of arguments as if they were input in the command line. Leave it
             None to use sys.argv.
     """
-    print('oi')
     parser = get_parser()
     args = parser.parse_args(args)
 
     # Put your main script logic here
-    print('No action defined for hope_of_ropes module!')
+    start_simul()    
 
 
 if __name__ == '__main__':
