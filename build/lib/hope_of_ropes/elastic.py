@@ -10,6 +10,7 @@ from .platforms import Platforms
 from .player import Player
 from math import fabs
 from random import randint
+from random import uniform
 
 MIN_ROPE_LENGTH = 50
 MAX_ROPE_LENGTH = 300
@@ -17,17 +18,20 @@ MIN_POS_SCREEN_X = 100
 MAX_POS_SCREEN_X = 700
 OFFSCREEN_POS_Y = 600
 
-# Change these pls
+LEVELS = [
+    (255, 0, 0, 255),
+    (0, 255, 0, 255),
+    (0, 0, 255, 255),
+    (255, 255, 255, 255),
+]
+
 PLAYER = Player()
 PLATFORM = Platforms()
 ROPE = Rope(PLAYER.obj)
 
-
 def start_simul():
     margin(10)
     PLATFORM.add(pos=pos.middle+(0, 200))
-    PLATFORM.add(pos=pos.middle+(200, 500))
-
 
     run()
 
@@ -40,21 +44,20 @@ def update():
     for platform in PLATFORM.items:
         if(platform.y < 30):
             PLATFORM.remove(platform)
-            if(randomness_pos_x >= MIN_POS_SCREEN_X and randomness_pos_x <= MAX_POS_SCREEN_X):
-                randomness_pos_x = randomness_pos_x + randint(-200,150)
-                PLATFORM.add(pos=(randomness_pos_x,OFFSCREEN_POS_Y))
-            elif (randomness_pos_x >= MAX_POS_SCREEN_X):
-                randomness_pos_x = randomness_pos_x - randint(200,300)
-                PLATFORM.add(pos=(randomness_pos_x,OFFSCREEN_POS_Y))
-            elif (randomness_pos_x <= MIN_POS_SCREEN_X):
-                randomness_pos_x = randomness_pos_x + randint(100,400)
-                PLATFORM.add(pos=(randomness_pos_x,OFFSCREEN_POS_Y))
+
+    if PLAYER.score%100 == 0 and PLAYER.score != 0:
+        num_of_platforms = randint(1, 3)
+        for i in range(0, num_of_platforms):
+            pos_x = uniform(MIN_POS_SCREEN_X, MAX_POS_SCREEN_X)
+            PLATFORM.add(pos=(pos_x, OFFSCREEN_POS_Y))
          
+    if PLAYER.score%1000 == 0:
+        world.background = LEVELS.pop()
+
     ROPE.update()
+    PLAYER.update()
 
-dx = 10
-
-
+dx = 20
 
 @listen('long-press', 'left', dx=-dx)
 @listen('long-press', 'right', dx=dx)
@@ -71,6 +74,7 @@ def hook(color, max_length):
                 platform.color = color
                 PLAYER.obj.color = color
                 ROPE.connect(platform)
+                break
     else:
         ROPE.remove()
         ROPE.platform.color = (0, 0, 0)
@@ -99,7 +103,7 @@ def climb_rope(climbing_distance):
 
 def move_screen(dy):
     for obj in world:
-        if type(obj) is not objects.AABB:
+        if type(obj) is not objects.AABB and type(obj) is not draw.Segment:
             obj.move(0, -dy)
         
 def margin(dx):

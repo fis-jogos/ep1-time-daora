@@ -50,6 +50,7 @@ class Rope(World):
 		self.obj.is_rope = True
 		self.rotate()
 
+
 	def rotate(self):
 		starting_position = self.player.pos
 		ending_position = self.platform.pos
