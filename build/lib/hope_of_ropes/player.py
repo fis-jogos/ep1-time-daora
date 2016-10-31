@@ -11,9 +11,14 @@ class Player:
 		self.obj.damping = 1
 		self.score = 0
 		self.copied = []
+		self.paused = False
+
+	def toggle_pause(self):
+		self.paused = not self.paused
 
 	def update(self):
-		self.score += 0.5
+		if not self.paused:
+			self.score += 0.5
 		# remove_num(self.copied)
 		# for index, num in enumerate(str(int(self.score))):
-		# 	self.copied.extend(print_num(int(num),(index*25, 0)))		
+			# self.copied.extend(print_num(int(num),(index*25, 0)))		

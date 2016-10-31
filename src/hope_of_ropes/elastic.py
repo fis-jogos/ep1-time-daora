@@ -11,7 +11,7 @@ from .player import Player
 from math import fabs
 from random import randint
 from random import uniform
-
+import pygame
 MIN_ROPE_LENGTH = 50
 MAX_ROPE_LENGTH = 300
 MIN_POS_SCREEN_X = 100
@@ -28,18 +28,19 @@ LEVELS = [
 PLAYER = Player()
 PLATFORM = Platforms()
 ROPE = Rope(PLAYER.obj)
+PAUSED = False
 
 def start_simul():
     margin(10)
     PLATFORM.add(pos=pos.middle+(0, 200))
-
+    pygame.init()
+    pygame.mixer.pre_init()
+    # pygame.mixer.music.load("###.mp3")
     run()
 
-randomness_pos_x = 400
 
 @listen('frame-enter')
 def update():
-    global randomness_pos_x
     move_screen(1)
     for platform in PLATFORM.items:
         if(platform.y < 30):
@@ -74,6 +75,7 @@ def hook(color, max_length):
                 platform.color = color
                 PLAYER.obj.color = color
                 ROPE.connect(platform)
+                # pygame.mixer.music.play()
                 break
     else:
         ROPE.remove()
@@ -94,8 +96,6 @@ def climb_rope(climbing_distance):
             ROPE.length = norm
         else:
             direction = Vec(0, 0)
-        # if climbing_distance > 0:
-        #     move_screen(climbing_distance)
         PLAYER.obj.move(direction)
     else:
         #Do nothing
@@ -103,7 +103,7 @@ def climb_rope(climbing_distance):
 
 def move_screen(dy):
     for obj in world:
-        if type(obj) is not objects.AABB and type(obj) is not draw.Segment:
+        if type(obj) is not objects.AABB and type(obj) is not draw.Segment and not PAUSED:
             obj.move(0, -dy)
         
 def margin(dx):
@@ -111,3 +111,12 @@ def margin(dx):
 
     world.add.aabb(shape=(10, H), pos=(dx/2, pos.middle.y), mass='inf')
     world.add.aabb(shape=(10, H), pos=(W - dx/2, pos.middle.y), mass='inf')
+@listen('key-down','p')
+def stop():
+    global PAUSED
+    PAUSED = not PAUSED
+    world.toggle_pause()
+    PLAYER.toggle_pause()
+@listen('key-down', 'x')
+def quit_game():
+    exit()
