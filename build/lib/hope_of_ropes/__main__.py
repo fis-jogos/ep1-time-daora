@@ -2,13 +2,6 @@ import argparse
 import hope_of_ropes
 from hope_of_ropes import __version__
 
-light = False
-
-class LightAction(argparse.Action):
-    def __call__(self, parser, namespace, values, option_string=None):
-        global light
-        light = True
-
 def get_parser():
     """
     Creates a new argument parser.
@@ -16,7 +9,7 @@ def get_parser():
     parser = argparse.ArgumentParser('Hope of Ropes')
     version = '%(prog)s ' + __version__
     parser.add_argument('--version', '-v', action='version', version=version)
-    parser.add_argument('--light', '-l', action=LightAction)
+    parser.add_argument('--light', '-l', action='store_true')
     return parser
 
 def main(args=None):
@@ -32,7 +25,7 @@ def main(args=None):
     args = parser.parse_args(args)
 
     # Put your main script logic here
-    if light:
+    if args.light:
         from .light_simul import start_simul
         start_simul()
     else:
