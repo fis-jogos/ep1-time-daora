@@ -12,6 +12,7 @@ from math import fabs
 from random import randint
 from random import uniform
 import pygame
+import os
 MIN_ROPE_LENGTH = 50
 MAX_ROPE_LENGTH = 300
 MIN_POS_SCREEN_X = 100
@@ -29,13 +30,14 @@ PLAYER = Player()
 PLATFORM = Platforms()
 ROPE = Rope(PLAYER.obj)
 PAUSED = False
-
 def start_simul():
     margin(10)
+
     PLATFORM.add(pos=pos.middle+(0, 200))
     pygame.init()
-    pygame.mixer.pre_init()
-    # pygame.mixer.music.load("###.mp3")
+    pygame.mixer.pre_init(44100,16,2,4096)
+    music = os.path.join('assets/sfx','hang_rope.mp3')
+    pygame.mixer.music.load(music)
     run()
 
 
@@ -57,6 +59,7 @@ def update():
 
     ROPE.update()
     PLAYER.update()
+    
 
 dx = 20
 
@@ -75,10 +78,11 @@ def hook(color, max_length):
                 platform.color = color
                 PLAYER.obj.color = color
                 ROPE.connect(platform)
-                # pygame.mixer.music.play()
+                pygame.mixer.music.play()
                 break
     else:
         ROPE.remove()
+        pygame.mixer.music.stop()
         ROPE.platform.color = (0, 0, 0)
         PLAYER.obj.color = (0, 0, 0)
         ROPE.platform = None
@@ -111,12 +115,12 @@ def margin(dx):
 
     world.add.aabb(shape=(10, H), pos=(dx/2, pos.middle.y), mass='inf')
     world.add.aabb(shape=(10, H), pos=(W - dx/2, pos.middle.y), mass='inf')
-@listen('key-down','z')
+@listen('key-down','p')
 def stop():
     global PAUSED
     PAUSED = not PAUSED
     world.toggle_pause()
     PLAYER.toggle_pause()
-@listen('key-down', '^[')
+@listen('key-down', 'x')
 def quit_game():
     exit()
