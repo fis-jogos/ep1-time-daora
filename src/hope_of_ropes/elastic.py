@@ -4,6 +4,8 @@
         Make a module for constants?
 
 '''
+from FGAme import conf
+conf.set_resolution(800, 700)
 from FGAme import *
 from .rope import Rope
 from .platforms import Platforms
@@ -16,8 +18,7 @@ import os
 MIN_ROPE_LENGTH = 50
 MAX_ROPE_LENGTH = 300
 MIN_POS_SCREEN_X = 100
-MAX_POS_SCREEN_X = 700
-OFFSCREEN_POS_Y = 600
+MAX_POS_SCREEN_X, OFFSCREEN_POS_Y  = conf.get_resolution()
 
 LEVELS = [
     (255, 0, 0, 255),
@@ -33,10 +34,10 @@ PAUSED = False
 def start_simul():
     margin(10)
 
-    PLATFORM.add(pos=pos.middle+(0, 200))
+    PLATFORM.add(pos=(pos.middle.x, OFFSCREEN_POS_Y-100))
     pygame.init()
-    pygame.mixer.pre_init(44100,16,2,4096)
-    music = os.path.join('assets/sfx','hang_rope.mp3')
+    pygame.mixer.pre_init()
+    music = os.path.abspath('Documents/UnB/FSJ/src/hope_of_ropes/assets/sfx/hang_rope.mp3')
     pygame.mixer.music.load(music)
     run()
 
@@ -57,6 +58,9 @@ def update():
     if PLAYER.score%1000 == 0:
         world.background = LEVELS.pop()
 
+    if PLAYER.obj.y < 0:
+        exit()
+    
     ROPE.update()
     PLAYER.update()
     

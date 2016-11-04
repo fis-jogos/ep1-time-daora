@@ -4,9 +4,11 @@
 from FGAme import *
 from .number import *
 
+MAX_POS_SCREEN_X, OFFSCREEN_POS_Y  = conf.get_resolution()
+
 class Player:
 	def __init__(self):
-		self.obj = world.add.circle(10, pos=pos.middle)
+		self.obj = world.add.circle(10, pos=(pos.middle.x, OFFSCREEN_POS_Y-200))
 		self.obj.gravity = 500
 		self.obj.damping = 1
 		self.score = 0

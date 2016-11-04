@@ -26,6 +26,7 @@
 /home/harrison/.local/lib/python3.5/site-packages/hope_of_ropes-0.2.6-py3.5.egg/hope_of_ropes/__pycache__/platforms.cpython-35.pyc
 /home/harrison/.local/lib/python3.5/site-packages/hope_of_ropes-0.2.6-py3.5.egg/hope_of_ropes/__pycache__/player.cpython-35.pyc
 /home/harrison/.local/lib/python3.5/site-packages/hope_of_ropes-0.2.6-py3.5.egg/hope_of_ropes/__pycache__/__main__.cpython-35.pyc
+/home/harrison/.local/lib/python3.5/site-packages/hope_of_ropes-0.2.6-py3.5.egg/hope_of_ropes/assets/sfx/hang_rope.mp3
 /home/harrison/.local/lib/python3.5/site-packages/hope_of_ropes-0.2.6-py3.5.egg/EGG-INFO/SOURCES.txt
 /home/harrison/.local/lib/python3.5/site-packages/hope_of_ropes-0.2.6-py3.5.egg/EGG-INFO/dependency_links.txt
 /home/harrison/.local/lib/python3.5/site-packages/hope_of_ropes-0.2.6-py3.5.egg/EGG-INFO/entry_points.txt

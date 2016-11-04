@@ -64,7 +64,7 @@ class Rope(World):
 		if self.platform != None:
 			self.remove()
 			self.create()
-
+			
 			dist = self.platform.pos - self.player.pos
 			direction = dist - dist.normalize()*self.length
 			direction *= self.k
