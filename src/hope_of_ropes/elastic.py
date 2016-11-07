@@ -10,6 +10,7 @@ from FGAme import *
 from .rope import Rope
 from .platforms import Platforms
 from .player import Player
+from .music import Music
 from math import fabs
 from random import randint
 from random import uniform
@@ -30,15 +31,12 @@ LEVELS = [
 PLAYER = Player()
 PLATFORM = Platforms()
 ROPE = Rope(PLAYER.obj)
+MUSIC = Music()
 PAUSED = False
 def start_simul():
     margin(10)
 
     PLATFORM.add(pos=(pos.middle.x, OFFSCREEN_POS_Y-100))
-    pygame.init()
-    pygame.mixer.pre_init()
-    music = os.path.abspath('Documents/UnB/FSJ/src/hope_of_ropes/assets/sfx/hang_rope.mp3')
-    pygame.mixer.music.load(music)
     run()
 
 
@@ -82,11 +80,10 @@ def hook(color, max_length):
                 platform.color = color
                 PLAYER.obj.color = color
                 ROPE.connect(platform)
-                pygame.mixer.music.play()
                 break
     else:
         ROPE.remove()
-        pygame.mixer.music.stop()
+        MUSIC.stop_music() # That's a migué line. Fix that please.
         ROPE.platform.color = (0, 0, 0)
         PLAYER.obj.color = (0, 0, 0)
         ROPE.platform = None

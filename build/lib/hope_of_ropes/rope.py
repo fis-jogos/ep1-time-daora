@@ -8,6 +8,7 @@ from FGAme import *
 from FGAme.physics.collision import get_collision, Collision
 from math import fabs
 from math import log
+from .music import Music
 
 from FGAme.mathtools import Vec2, sin, pi, shapes, shadow_y, \
     shadow_x
@@ -17,6 +18,7 @@ from smallshapes import aabb_coords
 from smallshapes import area, clip, center_of_mass, ROG_sqr
 from smallvectors import dot, Rotation2d
 
+MUSIC = Music()
 DEFAULT_SHAPE_X = 5
 DEFAULT_ROPE_LENGTH = 200
 DEFAULT_K = 5000
@@ -36,6 +38,7 @@ class Rope(World):
 	def connect(self, platform):
 		self.platform = platform
 		self.create()
+		MUSIC.play_music('hang_rope.mp3')
 
 	def create(self):
 		starting_position = self.player.pos

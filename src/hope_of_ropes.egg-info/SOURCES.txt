@@ -13,6 +13,7 @@ src/hope_of_ropes/__meta__.py
 src/hope_of_ropes/elastic.py
 src/hope_of_ropes/light.py
 src/hope_of_ropes/light_simul.py
+src/hope_of_ropes/music.py
 src/hope_of_ropes/number.py
 src/hope_of_ropes/platforms.py
 src/hope_of_ropes/player.py
