@@ -45,7 +45,7 @@ class MainMenu(object):
 							pass
 					if event.key == pygame.K_DOWN:
 						self.option += 1
-						if self.option > 2:
+						if self.option > 1:
 							self.option = 0
 						else:
 							# Do nothing
@@ -66,7 +66,7 @@ class MainMenu(object):
 			
 			pygame.display.update()
 
-			time_passed = self.clock.tick(30)
+			time_passed = self.clock.tick(60)
 
 def open_image(name):
 	image = pygame.image.load(os.path.abspath('src/hope_of_ropes/images/' + name)).convert_alpha()

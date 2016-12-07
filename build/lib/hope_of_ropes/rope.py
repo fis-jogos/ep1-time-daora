@@ -17,6 +17,7 @@ from FGAme.physics.collision import get_collision, Collision, DEFAULT_DIRECTIONS
 from smallshapes import aabb_coords
 from smallshapes import area, clip, center_of_mass, ROG_sqr
 from smallvectors import dot, Rotation2d
+from .signals import enemy_on_rope_signal
 
 MUSIC = Music()
 DEFAULT_SHAPE_X = 5
@@ -87,7 +88,8 @@ def collision_poly(A, B, directions=None, collision_class=Collision):
 	Collision detection using SAT.
 	"""
 
-	if (hasattr(A, 'is_rope') or hasattr(B, 'is_rope')):
+	if ((hasattr(A, 'is_rope') or hasattr(B, 'is_rope')) and not
+		(hasattr(A, 'is_enemy') or hasattr(B, 'is_enemy'))):
 		return None
 
 	# List of directions from normals
@@ -128,6 +130,11 @@ def collision_poly(A, B, directions=None, collision_class=Collision):
 	if area(clipped) == 0:
 		return None
 
+	if((hasattr(A, 'is_enemy') or hasattr(B, 'is_enemy')) and 
+	   (hasattr(A, 'is_rope') or hasattr(B, 'is_rope'))):
+			enemy_on_rope_signal.trigger()
+			return None
+
 	return collision_class(A, B, pos=col_pt, normal=norm, delta=min_overlap)
 
 
@@ -152,6 +159,7 @@ def aabb_poly(A, B, collision_class=Collision):
 def circle_poly(A, B, collision_class=Collision):
 	if (hasattr(A, 'is_rope') or hasattr(B, 'is_rope')):
 		return None
+
 	if shadow_x(A, B) < 0 or shadow_y(A, B) < 0:
 		return None
 

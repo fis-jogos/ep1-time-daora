@@ -15,6 +15,8 @@ from math import fabs
 from random import randint
 from random import uniform
 from .main_menu import MainMenu
+from .signals import *
+from .enemy import Enemy
 import pygame
 import os
 MIN_ROPE_LENGTH = 50
@@ -34,11 +36,13 @@ PLATFORM = Platforms()
 ROPE = Rope(PLAYER.obj)
 MUSIC = Music()
 MAIN_MENU = MainMenu()
+ENEMY = Enemy()
 PAUSED = False
 def start_simul():
     margin(10)
     PLATFORM.add(pos=(pos.middle.x, OFFSCREEN_POS_Y-100))
     start_action = MAIN_MENU.proccess_input()
+
     if start_action == 0:
         run()
     else:
@@ -53,17 +57,22 @@ def update():
         if(platform.y < 30):
             PLATFORM.remove(platform)
 
+    for enemy in ENEMY.items:
+        if enemy.y < 30:
+            ENEMY.remove(enemy)
+
     if PLAYER.score%100 == 0 and PLAYER.score != 0:
         num_of_platforms = randint(1, 3)
+        ENEMY.add(pos=(randint(100, 700), OFFSCREEN_POS_Y - 100))
         for i in range(0, num_of_platforms):
             pos_x = uniform(MIN_POS_SCREEN_X, MAX_POS_SCREEN_X)
             PLATFORM.add(pos=(pos_x, OFFSCREEN_POS_Y))
          
     if PLAYER.score%1000 == 0:
-        world.background = LEVELS.pop()
+        next_level_signal.trigger()
 
     if PLAYER.obj.y < 0:
-        exit()
+        player_death_signal.trigger()
     
     ROPE.update()
     PLAYER.update()
@@ -71,13 +80,18 @@ def update():
 
 dx = 20
 
+@listen('next-level')
+def next_level():
+    world.background = LEVELS.pop()
+
 @listen('long-press', 'left', dx=-dx)
 @listen('long-press', 'right', dx=dx)
 def wind(dx):
     PLAYER.obj.vel += (dx, 0)
 
-@listen('key-down', 'space', color=(255, 0, 0), max_length=400)
-def hook(color, max_length):
+@listen('enemy-on-rope')
+@listen('key-down', 'space')
+def hook(color=(255, 0, 0), max_length=400):
     if ROPE.platform == None:
         for platform in PLATFORM.items:
             #Hook only if platform is directly above
@@ -127,9 +141,4 @@ def margin(dx):
 def stop():
     global PAUSED
     PAUSED = not PAUSED
-    #world.toggle_pause()
-    #PLAYER.toggle_pause()
     MAIN_MENU.proccess_input()
-@listen('key-down', 'x')
-def quit_game():
-    exit()

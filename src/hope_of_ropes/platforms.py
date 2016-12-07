@@ -7,7 +7,7 @@ from FGAme import *
 DEFAULT_RADIUS = 30
 DEFAULT_MASS = 100000000
 
-class Platforms:
+class Platforms(object):
 	def __init__(self):
 		self.items = []	
 

@@ -20,6 +20,7 @@ src/hope_of_ropes/number.py
 src/hope_of_ropes/platforms.py
 src/hope_of_ropes/player.py
 src/hope_of_ropes/rope.py
+src/hope_of_ropes/signals.py
 src/hope_of_ropes.egg-info/PKG-INFO
 src/hope_of_ropes.egg-info/SOURCES.txt
 src/hope_of_ropes.egg-info/dependency_links.txt
