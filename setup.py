@@ -50,6 +50,7 @@ setup(
     install_requires=[
         'FGAme',
         'pygame',
+        'colortools',
     ],
     extras_require={
         'dev': [

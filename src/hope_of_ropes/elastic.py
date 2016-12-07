@@ -37,7 +37,6 @@ MAIN_MENU = MainMenu()
 PAUSED = False
 def start_simul():
     margin(10)
-
     PLATFORM.add(pos=(pos.middle.x, OFFSCREEN_POS_Y-100))
     start_action = MAIN_MENU.proccess_input()
     if start_action == 0:

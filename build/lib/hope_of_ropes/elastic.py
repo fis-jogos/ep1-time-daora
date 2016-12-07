@@ -14,6 +14,7 @@ from .music import Music
 from math import fabs
 from random import randint
 from random import uniform
+from .main_menu import MainMenu
 import pygame
 import os
 MIN_ROPE_LENGTH = 50
@@ -32,12 +33,17 @@ PLAYER = Player()
 PLATFORM = Platforms()
 ROPE = Rope(PLAYER.obj)
 MUSIC = Music()
+MAIN_MENU = MainMenu()
 PAUSED = False
 def start_simul():
     margin(10)
-
     PLATFORM.add(pos=(pos.middle.x, OFFSCREEN_POS_Y-100))
-    run()
+    start_action = MAIN_MENU.proccess_input()
+    if start_action == 0:
+        run()
+    else:
+        # Do nothing
+        pass
 
 
 @listen('frame-enter')
@@ -120,8 +126,9 @@ def margin(dx):
 def stop():
     global PAUSED
     PAUSED = not PAUSED
-    world.toggle_pause()
-    PLAYER.toggle_pause()
+    #world.toggle_pause()
+    #PLAYER.toggle_pause()
+    MAIN_MENU.proccess_input()
 @listen('key-down', 'x')
 def quit_game():
     exit()
