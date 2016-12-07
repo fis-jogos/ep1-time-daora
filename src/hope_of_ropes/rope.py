@@ -38,7 +38,7 @@ class Rope(World):
 	def connect(self, platform):
 		self.platform = platform
 		self.create()
-		MUSIC.play_music('hang_rope.mp3')
+		MUSIC.play_rope()
 
 	def create(self):
 		starting_position = self.player.pos

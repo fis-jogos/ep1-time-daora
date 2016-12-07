@@ -80,9 +80,10 @@ def wind(dx):
 def hook(color, max_length):
     if ROPE.platform == None:
         for platform in PLATFORM.items:
+            #Hook only if platform is directly above
             if (fabs(platform.pos.x-PLAYER.obj.pos.x) < 30 and \
                 platform.pos.y > PLAYER.obj.pos.y and \
-                fabs(PLAYER.obj.pos.y - platform.pos.y) < max_length): #Hook only if platform is directly above
+                fabs(PLAYER.obj.pos.y - platform.pos.y) < max_length): 
                 platform.color = color
                 PLAYER.obj.color = color
                 ROPE.connect(platform)
